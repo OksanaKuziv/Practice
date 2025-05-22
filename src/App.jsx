@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import './App.scss';
 import { useState } from 'react';
+import { FiltersPanel } from './components/FiltersPanel/FiltesrPanel';
+import { ProductTable } from './components/ProductTable/ProductTable';
 
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
-import { FiltersPanel } from './components/FiltersPanel/FiltesrPanel';
-import { ProductTable } from './components/ProductTable/ProductTable';
 
 const products = productsFromServer.map(product => {
   const category =
