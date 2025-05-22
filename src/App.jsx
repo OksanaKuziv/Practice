@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import './App.scss';
-import classNames from 'classnames';
 import { useState } from 'react';
 
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
+import { FiltersPanel } from './components/FiltersPanel/FiltesrPanel';
+import { ProductTable } from './components/ProductTable/ProductTable';
 
 const products = productsFromServer.map(product => {
   const category =
@@ -89,152 +90,25 @@ export const App = () => {
         <h1 className="title">Product Categories</h1>
 
         <div className="block">
-          <nav className="panel">
-            <p className="panel-heading">Filters</p>
-
-            <p className="panel-tabs has-text-weight-bold">
-              <a
-                className={classNames({ 'is-active': filterByUser === null })}
-                data-cy="FilterAllUsers"
-                href="#/"
-                onClick={() => setFilterByUser(null)}
-              >
-                All
-              </a>
-              {USERS_LIST.map(user => (
-                <a
-                  className={classNames({ 'is-active': filterByUser === user })}
-                  key={user}
-                  data-cy="FilterUser"
-                  href="#/"
-                  onClick={() => setFilterByUser(user)}
-                >
-                  {user}
-                </a>
-              ))}
-            </p>
-
-            <div className="panel-block">
-              <p className="control has-icons-left has-icons-right">
-                <input
-                  data-cy="SearchField"
-                  type="text"
-                  className="input"
-                  placeholder="Search"
-                  value={query}
-                  onChange={event => setQuery(event.target.value.trimStart())}
-                />
-
-                <span className="icon is-left">
-                  <i className="fas fa-search" aria-hidden="true" />
-                </span>
-
-                <span className="icon is-right">
-                  {query && (
-                    <button
-                      data-cy="ClearButton"
-                      type="button"
-                      className="delete"
-                      onClick={() => resetAllFilters()}
-                    />
-                  )}
-                </span>
-              </p>
-            </div>
-
-            <div className="panel-block is-flex-wrap-wrap">
-              <a
-                href="#/"
-                data-cy="AllCategories"
-                className={classNames('button is-success mr-6', {
-                  'is-outlined': selectedCategories.length !== 0,
-                })}
-                onClick={() => setSelectedCategories([])}
-              >
-                All
-              </a>
-              {CATEGORIES_LIST.map(category => (
-                <a
-                  key={category}
-                  data-cy="Category"
-                  className={classNames('button mr-2 my-1', {
-                    'is-info': selectedCategories.includes(category),
-                  })}
-                  href="#/"
-                  onClick={() => toggleCategory(category)}
-                >
-                  {category}
-                </a>
-              ))}
-            </div>
-
-            <div className="panel-block">
-              <a
-                data-cy="ResetAllButton"
-                href="#/"
-                className="button is-link is-outlined is-fullwidth"
-                onClick={() => resetAllFilters()}
-              >
-                Reset all filters
-              </a>
-            </div>
-          </nav>
+          <FiltersPanel
+            USERS_LIST={USERS_LIST}
+            CATEGORIES_LIST={CATEGORIES_LIST}
+            filterByUser={filterByUser}
+            setFilterByUser={setFilterByUser}
+            query={query}
+            setQuery={setQuery}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            toggleCategory={toggleCategory}
+            resetAllFilters={resetAllFilters}
+          />
         </div>
 
         <div className="box table-container">
-          {filteredProducts.length === 0 ? (
-            <p data-cy="NoMatchingMessage">
-              No products matching selected criteria
-            </p>
-          ) : (
-            <table
-              data-cy="ProductTable"
-              className="table is-striped is-narrow is-fullwidth"
-            >
-              <thead>
-                <tr>
-                  {TABLE_HEADERS.map(table => (
-                    <th key={table}>
-                      <span className="is-flex is-flex-wrap-nowrap">
-                        {table}
-                        <a href="#/">
-                          <span className="icon">
-                            <i data-cy="SortIcon" className="fas fa-sort" />
-                          </span>
-                        </a>
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredProducts.map(product => (
-                  <tr key={product.id} data-cy="Product">
-                    <td className="has-text-weight-bold" data-cy="ProductId">
-                      {product.id}
-                    </td>
-
-                    <td data-cy="ProductName">{product.name}</td>
-                    <td data-cy="ProductCategory">
-                      {product.category.icon} - {product.category.title}
-                    </td>
-
-                    <td
-                      data-cy="ProductUser"
-                      className={classNames(
-                        product.user.sex === 'm'
-                          ? 'has-text-link'
-                          : 'has-text-danger',
-                      )}
-                    >
-                      {product.user.name}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+          <ProductTable
+            TABLE_HEADERS={TABLE_HEADERS}
+            filteredProducts={filteredProducts}
+          />
         </div>
       </div>
     </div>
